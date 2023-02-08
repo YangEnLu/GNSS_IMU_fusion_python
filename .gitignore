@@ -1,0 +1,6 @@
+qt_test/
+src/common/__pycache__/
+src/gui/__pycache__/
+src/readfile/__pycache__/
+*.exe
+build/
