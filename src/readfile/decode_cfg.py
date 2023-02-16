@@ -61,7 +61,7 @@ def decode_cfg(opt, fname: str) -> bool:
 
         if line[0:13].find("navsys") != -1:
             buff = line.split()
-            opt.navsys = list(buff[2])
+            opt.navsys = buff[2]
             continue
 
         if line[0:13].find("nfreq") != -1:
@@ -75,6 +75,7 @@ def decode_cfg(opt, fname: str) -> bool:
             continue
 
         if line[0:13].find("sateph") != -1:
+            buff = line.split()
             opt.sateph = float(buff[2])
             continue
 

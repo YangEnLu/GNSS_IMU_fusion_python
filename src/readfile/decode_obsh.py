@@ -6,11 +6,17 @@ import numpy as np
 
 def decode_obsh(headinfo, nav, obs, fname):
     fid = open(fname, "r")
-    tobs = np.empty((glc().MAXOBSTYPE, 3, glc().NSYS), dtype='str')
+    tobs = np.chararray((glc().MAXOBSTYPE, glc().NSYS),
+                        itemsize=3, unicode=True)
+    tobs[:] = ""
     delt = np.zeros((3, 1))
     sta = gls().sta
     decode_err = True
+    start_j = 0
+    last_syscode = ""
+    num_line = 0
     for line in fid:
+        num_line += 1
         label = line[60:-1]
         if len(line) <= 60:
             continue
@@ -66,8 +72,14 @@ def decode_obsh(headinfo, nav, obs, fname):
             continue
         elif label.find("CENTER OF MASS: XYZ") != -1:
             continue
+
         elif label.find("SYS / # / OBS TYPES") != -1:  # ver 3.0
-            syscode = line[0]
+            if last_syscode == "":
+                syscode = line[0]
+                n = int(line[3:7])
+                start_j = 0
+                nt = 0
+
             if syscode == "G":
                 i = glc().SYS_GPS
             elif syscode == "R":
@@ -80,20 +92,24 @@ def decode_obsh(headinfo, nav, obs, fname):
                 i = glc().SYS_QZS
             else:
                 continue
-            n = int(line[3:7])
+
             k = 6
-            nt = 0
-            for j in range(n):
-                if k > 58:
-                    k = 7
-                string = line[k+1:k+3]
-                tobs[nt, :, i] = string
+            for j in range(start_j, n):
+                if k > 57:
+                    start_j = j
+                    break
+                string = line[k+1:k+4]
+                tobs[nt, i-1] = string
                 nt = nt+1
                 k = k+4
             if i == 4 and (headinfo.ver-3.02) < 1e-3:
                 for j in range(nt):
-                    if tobs[j, 2, i] == "1":
-                        tobs[j, 2, i] == "2"
+                    if tobs[j, i-1][1] == "1":
+                        tobs[j, i-1] = tobs[j, i-1][0]+"2"+tobs[j, i-1][2]
+            if j < (n-1):
+                last_syscode = syscode
+            else:
+                last_syscode = ""
 
         elif label.find("WAVELENGTH FACT L1/2") != -1:
             continue
@@ -150,13 +166,19 @@ def decode_obsh(headinfo, nav, obs, fname):
         elif label.find("SYS / PHASE SHIFTS") != -1:
             continue
         elif label.find("GLONASS SLOT / FRQ #") != -1:
-            p = 4
+            p = 5
             prn = 0
             for i in range(8):
-                if not line[p+1:p+2]:
+                test = line[p:p+2].strip()
+                if line[p:p+2].strip():
                     prn = float(line[p+1:p+2])
-                if not line[p+5:p+6]:
-                    fcn = float(line[p+5:p+6])
+                else:
+                    prn = 0
+                test = line[p+3:p+5].strip()
+                if line[p+3:p+5].strip():
+                    fcn = float(line[p+4:p+5])
+                else:
+                    fcn = 0
                 if prn >= 1 and prn <= glc().MAXPRNGLO:
                     nav.glo_fcn[int(prn-1)] = fcn+8
                     p = p+7
@@ -182,8 +204,8 @@ def decode_obsh(headinfo, nav, obs, fname):
             continue
         elif label.find("END OF HEADER") != -1:
             break
-    
+
     obs.sta = sta
     decode_err = False
-    
-    return decode_err
+
+    return headinfo, nav, obs, tobs, num_line

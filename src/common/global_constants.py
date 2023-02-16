@@ -289,6 +289,14 @@ class glc:
                             0, 0, 0, 0, 0, 0, 5, 5, 5, 0,
                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+        self.GALfreqband = [0, 1, 0, 0, 1, 0, 0, 0, 0, 1,
+                            1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            2, 2, 2, 0, 0, 0, 5, 5, 5, 5,
+                            5, 0, 0, 0, 0, 0, 3, 3, 3, 0,
+                            0, 0, 4, 4, 4, 0, 0, 0, 0, 0]
+
         # BDS B1(2),B2(7),B3(6),B1C(1),B2a(5),B2b(7)
         self.BDSfreqband = [0, 0, 0, 0, 4, 4, 0, 0, 0, 4,
                             0, 0, 4, 0, 0, 0, 0, 1, 0, 0,
@@ -303,11 +311,13 @@ class glc:
                             3, 3, 3, 3, 3, 0, 0, 0, 4, 0,
                             4, 4, 4, 4, 0, 0, 0, 0, 0, 0,
                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        self.codepris = [['CWPYMNSL', 'CWPYMNDSLX', 'IQX', '', '', ''],
-                         ['CP', 'CP', 'IQX', 'ABX', 'ABXP', ''],
-                         ['CABXZ', 'IQX',   'IQX',    'IQX',    'CABXZ', ''],
-                         ['IQX', 'IQXA',   'IQX',    'DPXA',    'DPX', 'DPZ'],
-                         ['CSLXZ', 'SLX',   'IQXDPZ',    'SLXEZ',    '', '']]
+        self.codepris = np.array([['CWPYMNSL', 'CWPYMNDSLX', 'IQX', '', '', ''],
+                                  ['CP', 'CP', 'IQX', 'ABX', 'ABXP', ''],
+                                  ['CABXZ', 'IQX',   'IQX',
+                                      'IQX',    'CABXZ', ''],
+                                  ['IQX', 'IQXA',   'IQX',
+                                      'DPXA',    'DPX', 'DPZ'],
+                                  ['CSLXZ', 'SLX',   'IQXDPZ',    'SLXEZ',    '', '']])
 
         self.GPS_C1CC2W = 1
         self.GPS_C1CC5Q = 2
@@ -568,12 +578,12 @@ class obsd:
     def __init__(self):
         self.time = gtime()
         self.sat = 0
-        self.P = np.zeros((glc().NFREQ, 1))
-        self.L = np.zeros((glc().NFREQ, 1))
-        self.D = np.zeros((glc().NFREQ, 1))
-        self.S = np.zeros((glc().NFREQ, 1))
-        self.LLI = np.zeros((glc().NFREQ, 1))
-        self.code = np.zeros((glc().NFREQ, 1))
+        self.P = np.zeros((glc().MAXFREQ, 1))
+        self.L = np.zeros((glc().MAXFREQ, 1))
+        self.D = np.zeros((glc().MAXFREQ, 1))
+        self.S = np.zeros((glc().MAXFREQ, 1))
+        self.LLI = np.zeros((glc().MAXFREQ, 1))
+        self.code = np.zeros((glc().MAXFREQ, 1))
 
 
 class obs:
@@ -808,12 +818,32 @@ class default_opt:
 
         self.filepath = ''
         self.sitename = ''
+
+    def show_info(self):
+        print(f"version = {self.ver}")
+        print(f"time start = {self.ts}")
+        print(f"time end = {self.te}")
+        print(f"time interval = {self.ti}")
+
+
 class headinfo:
-        def __init__(self):
-            self.ver = 2.10
-            self.type = ""
-            self.sys = None
-            self.tsys = None
+    def __init__(self):
+        self.ver = 2.10
+        self.type = ""
+        self.sys = None
+        self.tsys = None
+
+
+class index:
+    def __init__(self):
+        self.n = 0
+        self.frq = np.zeros((1, glc().MAXOBSTYPE))
+        self.pos = np.zeros((1, glc().MAXOBSTYPE))
+        self.pri = np.zeros((1, glc().MAXOBSTYPE))
+        self.type = np.zeros((1, glc().MAXOBSTYPE))
+        self.code = np.zeros((1, glc().MAXOBSTYPE))
+        self.shift = np.zeros((1, glc().MAXOBSTYPE))
+
 
 class gls:
     def __init__(self):

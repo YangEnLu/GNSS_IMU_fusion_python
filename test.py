@@ -14,12 +14,12 @@ from src.main_func.exepos import exepos
 
 
 # Open input UI
-opt,file,gui_flag = OpenUI()
-    
+opt, file, gui_flag = OpenUI()
+
 rtk = gls().rtk
 # read input file
 obsr = gls().obs
 obsb = gls().obs
 nav = gls().nav
 imu = gls().imu
-readrnxobs(obsr,nav,opt,file.obsr)
+obsr, nav = readrnxobs(obsr, nav, opt, file.obsr)
