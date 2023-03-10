@@ -152,6 +152,6 @@ def decode_data(line, ver, data, mask, ind):
         elif ind_t.type.item(i) == 3:
             data.D[int(p.item(i)-1), 0] = val.item(i)
         elif ind_t.type.item(i) == 4:
-            data.S[int(p.item(i)-1), 0] = chr(int(val.item(i)*4.0+0.5))
+            data.S[int(p.item(i)-1), 0] = int(val.item(i)*4.0+0.5)
 
     return data, stat

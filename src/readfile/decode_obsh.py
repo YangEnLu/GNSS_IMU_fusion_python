@@ -1,10 +1,10 @@
-from ..common.global_constants import glc, gls, headinfo
+from ..common.global_constants import glc, gls, obs, nav, headinfo
 from .find_str import find_str
 from .convcode import convcode
 import numpy as np
 
 
-def decode_obsh(headinfo, nav, obs, fname):
+def decode_obsh(headinfo:headinfo, nav:nav, obs:obs, fname:str):
     fid = open(fname, "r")
     tobs = np.chararray((glc().MAXOBSTYPE, glc().NSYS),
                         itemsize=3, unicode=True)

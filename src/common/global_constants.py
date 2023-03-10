@@ -371,8 +371,8 @@ class glc:
 
 class gtime:
     def __init__(self):
-        self.time = 0
-        self.sec = 0
+        self.time = 0.0
+        self.sec = 0.0
 
 
 class ftime:
