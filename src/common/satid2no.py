@@ -22,7 +22,7 @@ def satid2no(satid):
         sys = glc().SYS_GAL
         prn = prn+glc().MINPRNGAL-1
     elif code == "C":
-        sys = glc().SYS_GAL
+        sys = glc().SYS_BDS
         prn = prn+glc().MINPRNBDS-1
     elif code == "J":
         sys = glc().SYS_QZS

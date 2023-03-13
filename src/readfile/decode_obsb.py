@@ -9,6 +9,7 @@ from ..readfile.restslips import restslips
 from ..common.screent import screent
 import numpy as np
 import numpy.matlib as npm
+from tqdm import tqdm
 
 
 def decode_obsb(headinfo: headinfo, obs, tobs, opt: default_opt, fname: str, num_prev_line: int):
@@ -43,6 +44,7 @@ def decode_obsb(headinfo: headinfo, obs, tobs, opt: default_opt, fname: str, num
                 data = npm.repmat(gls().obsd, glc().MAXOBS, 1)
                 time, nsat, sats, flag = decode_epoch(headinfo.ver, line)
                 is_header = 0
+                ndata = 0
             else:
                 if i < nsat:
                     if nsat <= 0:
@@ -50,11 +52,10 @@ def decode_obsb(headinfo: headinfo, obs, tobs, opt: default_opt, fname: str, num
                     elif flag == 3 or flag == 4:
                         continue
                     elif flag <= 2 or flag == 6:
-                        data0 = gls().obsd
+                        data0 = obsd()
                         data0.time = time
                         data0.sat = sats[i]
-                        data0, stat = decode_data(
-                            line, headinfo.ver, data0, mask, ind)
+                        data0, stat = decode_data(line, headinfo.ver, data0, mask, ind)
                         if stat == 1:
                             data[ndata, 0] = data0
                             ndata = ndata+1
@@ -73,8 +74,16 @@ def decode_obsb(headinfo: headinfo, obs, tobs, opt: default_opt, fname: str, num
                         continue
                     for id in range(ndata):
                         if obs.n+1 > np.shape(obs.data)[0]:
-                            obs.data[obs.n:obs.n+100000,] = npm.repmat(obsd(), 100000, 1)
-                        data[id,0], slips=restslips(data[id,0],slips)
-                        # obs.data[]
+                            obs.data[obs.n:obs.n+100000,
+                                     ] = npm.repmat(obsd(), 100000, 1)
+                        data[id, 0], slips = restslips(data[id, 0], slips)
+                        obs.data[obs.n, 0] = data[id, 0]
+                        obs.n = obs.n+1
+
+                    del data
+
+ 
+    if obs.n < np.shape(obs.data)[0]:
+        obs.data=obs.data[0:obs.n,]
 
     return obs

@@ -2,7 +2,7 @@ from ..common.global_constants import glc, default_opt
 from .decode_rnxh import decode_rnxh
 from .decode_obsh import decode_obsh
 from .decode_obsb import decode_obsb
-
+import time
 
 def readrnxobs(obs, nav, opt: default_opt, fname: str):
     fname0 = fname.split(glc().sep)[-1]
@@ -18,6 +18,16 @@ def readrnxobs(obs, nav, opt: default_opt, fname: str):
         headinfo, nav, obs, fname)
 
     # decode body
+    st = time.time()
     obs = decode_obsb(headinfo, obs, tobs, opt, fname, num_prev_line)
+    et = time.time()
+    elapsed_time = et - st
+    print(f'Execution time: {elapsed_time:.2f} seconds')
+    if obs.n == 0:
+        return obs, nav
 
+    # sort obs
+    
+    
+    print("over")
     return obs, nav
