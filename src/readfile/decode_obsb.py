@@ -1,4 +1,4 @@
-from ..common.global_constants import gls, glc, index, default_opt, headinfo, obsd
+from ..common.global_constants import gls, glc, index, default_opt, headinfo, obsd, obs
 from .set_sysmask import set_sysmask
 from .set_index import set_index
 from .decode_epoch import decode_epoch
@@ -12,7 +12,7 @@ import numpy.matlib as npm
 from tqdm import tqdm
 
 
-def decode_obsb(headinfo: headinfo, obs, tobs, opt: default_opt, fname: str, num_prev_line: int):
+def decode_obsb(headinfo: headinfo, obs: obs, tobs, opt: default_opt, fname: str, num_prev_line: int):
     slips = np.zeros((glc().MAXSAT, glc().NFREQ))
     obs.data = npm.repmat(obsd(), 100000, 1)
 
@@ -34,7 +34,7 @@ def decode_obsb(headinfo: headinfo, obs, tobs, opt: default_opt, fname: str, num
     i = 0
     ndata = 0
     # data = npm.repmat(gls().obsd, glc().MAXOBS, 1)
-    for line in fid:
+    for line in tqdm(fid):
         num_line = num_line+1
         if num_line <= num_prev_line:
             continue

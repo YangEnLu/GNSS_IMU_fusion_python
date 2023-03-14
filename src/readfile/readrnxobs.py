@@ -1,10 +1,11 @@
-from ..common.global_constants import glc, default_opt
+from ..common.global_constants import glc, default_opt, obs, nav
 from .decode_rnxh import decode_rnxh
 from .decode_obsh import decode_obsh
 from .decode_obsb import decode_obsb
+from ..common.sortobs import sortobs
 import time
 
-def readrnxobs(obs, nav, opt: default_opt, fname: str):
+def readrnxobs(obs: obs, nav: nav, opt: default_opt, fname: str):
     fname0 = fname.split(glc().sep)[-1]
     print(f"Info:reading obs file {fname0}")
 
@@ -22,12 +23,12 @@ def readrnxobs(obs, nav, opt: default_opt, fname: str):
     obs = decode_obsb(headinfo, obs, tobs, opt, fname, num_prev_line)
     et = time.time()
     elapsed_time = et - st
-    print(f'Execution time: {elapsed_time:.2f} seconds')
+    print(f'Decoding obsb time: {elapsed_time:.2f} seconds')
     if obs.n == 0:
         return obs, nav
 
     # sort obs
-    
+    obs = sortobs(obs)
     
     print("over")
     return obs, nav

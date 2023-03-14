@@ -10,6 +10,7 @@ from src.readfile.decode_cfg import decode_cfg
 from src.readfile.decode_rnxh import decode_rnxh
 from src.readfile.decode_obsh import decode_obsh
 from src.readfile.readrnxobs import readrnxobs
+from src.readfile.readrnxnav import readrnxnav
 from src.main_func.exepos import exepos
 
 
@@ -22,4 +23,6 @@ obsr = gls().obs
 obsb = gls().obs
 nav = gls().nav
 imu = gls().imu
-obsr, nav = readrnxobs(obsr, nav, opt, file.obsr)
+# obsr, nav = readrnxobs(obsr, nav, opt, file.obsr)
+nav = readrnxnav(nav, opt, file.beph)
+# exepos(opt,file)

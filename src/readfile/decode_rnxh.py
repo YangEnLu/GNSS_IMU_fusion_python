@@ -4,7 +4,7 @@ from ..common.global_constants import glc, headinfo
 def decode_rnxh(fname):
     fid = open(fname, "r")
 
-    # Read the common part of the renix header information
+    # Read the common part of the rinex header information
 
     # default file header information
     head = headinfo()
