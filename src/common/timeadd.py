@@ -2,7 +2,7 @@ import numpy as np
 from ..common.global_constants import gtime
 
 
-def timeadd(t0, sec):
+def timeadd(t0:gtime, sec:float):
     t0.sec = t0.sec+sec
     tt = np.floor(t0.sec)
     t = gtime()

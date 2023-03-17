@@ -423,6 +423,9 @@ class eph:
         self.tgd = np.array([[0, 0, 0, 0]])
         self.Adot = 0
         self.ndot = 0
+    def show_info(self):
+        print(f"satid = {self.sat}")
+        print(f"iode = {self.iode}")
 
 
 class geph:
@@ -528,10 +531,10 @@ class nav:
         self.utc_gal = np.zeros((1, 4))
         self.utc_bds = np.zeros((1, 4))
         self.utc_qzs = np.zeros((1, 4))
-        self.ion_gps = np.zeros((1, 4))
+        self.ion_gps = np.zeros((1, 8))
         self.ion_gal = np.zeros((1, 4))
-        self.ion_bds = np.zeros((1, 4))
-        self.ion_qzs = np.zeros((1, 4))
+        self.ion_bds = np.zeros((1, 8))
+        self.ion_qzs = np.zeros((1, 8))
         self.leaps = 0
         self.lam = np.zeros((glc().MAXSAT, glc().MAXFREQ))
         self.cbias = np.zeros((glc().MAXSAT, glc().MAXDCBPAIR))
@@ -832,6 +835,10 @@ class headinfo:
         self.type = ""
         self.sys = None
         self.tsys = None
+    def show_info(self):
+        print(f"version = {self.ver}")
+        print(f"type = {self.type}")
+        print(f"system = {self.sys}")
 
 
 class index:

@@ -57,7 +57,7 @@ class MainWindow_controller(QtWidgets.QMainWindow):
             pass
         else:
             obsr_filename, filetype = QFileDialog.getOpenFileName(
-                self, "Open obsr file", self.file.path, "*.*O;;*.*o")                 # start path
+                self, "Open obsr file", self.file.path, "*.*O;;*.*o;;*.obs")                 # start path
             if not obsr_filename:
                 self.ui.obsr_line_edit.setText("rover obs file(essential)")
                 self.obsr_filename = ""
@@ -71,7 +71,7 @@ class MainWindow_controller(QtWidgets.QMainWindow):
             pass
         else:
             obsb_filename, filetype = QFileDialog.getOpenFileName(
-                self, "Open obsb file", self.file.path, "*.*O;;*.*o")                 # start path
+                self, "Open obsb file", self.file.path, "*.*O;;*.*o;;*.obs")                 # start path
             if not obsb_filename:
                 self.ui.obsb_line_edit.setText("base obs file(optional)")
                 self.obsb_filename = ""
@@ -85,7 +85,7 @@ class MainWindow_controller(QtWidgets.QMainWindow):
             pass
         else:
             eph_filename, filetype = QFileDialog.getOpenFileName(
-                self, "Open ephemeris file",  self.file.path, "*.*n;;*.*p")                 # start path
+                self, "Open ephemeris file",  self.file.path, "*.*n;;*.*p;;*.nav")                 # start path
             if not eph_filename:
                 self.ui.eph_line_edit.setText(
                     "broadcast ephemeris file(essential)")

@@ -2,7 +2,7 @@ from .global_constants import gtime
 import math
 
 
-def epoch2time(ep):
+def epoch2time(ep: list):
     time = gtime()
     time.time = 0
     time.sec = 0
@@ -12,7 +12,7 @@ def epoch2time(ep):
     day = ep[2]
     if year < 1970 or year > 2099 or mon < 1 or mon > 12:
         return time
-    if (year % 4 == 0) and mon>=3:
+    if (year % 4 == 0) and mon >= 3:
         temp = 1
     else:
         temp = 0

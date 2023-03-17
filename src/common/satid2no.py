@@ -3,7 +3,7 @@ from .satno import satno
 from scanf import scanf
 
 
-def satid2no(satid):
+def satid2no(satid: str):
     sats = 0
     if len(satid) == 2:
         code, prn = scanf("%s%d", satid)

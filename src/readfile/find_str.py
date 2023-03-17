@@ -1,4 +1,4 @@
-def find_str(string, substring):
+def find_str(string:str, substring:str):
     index = 0
     indices = []
     while index < len(string):
