@@ -27,6 +27,8 @@ def satid2no(satid: str):
     elif code == "J":
         sys = glc().SYS_QZS
         prn = prn+glc().MINPRNQZS-1
+    else:
+        return sats
 
     sats = satno(sys, prn)
     return sats

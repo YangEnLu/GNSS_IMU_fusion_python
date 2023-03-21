@@ -24,5 +24,5 @@ obsb = gls().obs
 nav = gls().nav
 imu = gls().imu
 # obsr, nav = readrnxobs(obsr, nav, opt, file.obsr)
-nav = readrnxnav(nav, opt, file.beph)
-# exepos(opt,file)
+# nav = readrnxnav(nav, opt, file.beph)
+exepos(opt,file)

@@ -420,7 +420,7 @@ class eph:
         self.f2 = 0
         # GPS/QZS:tgd(1) P1/P2 GAL:tgd(1) E5a/E1 tgd(2) E5b/E1
         # BDS:tgd(1) B1/B3 tgd(2) B2/B3
-        self.tgd = np.array([[0, 0, 0, 0]])
+        self.tgd = np.zeros((1,4))
         self.Adot = 0
         self.ndot = 0
     def show_info(self):

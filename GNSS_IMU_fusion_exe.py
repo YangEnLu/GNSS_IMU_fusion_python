@@ -20,12 +20,14 @@ if __name__ == '__main__':
     from src.common.global_constants import glc, gls
     from src.gui.GNSSIMUCfg import OpenUI
     from src.readfile.decode_cfg import decode_cfg
+    from src.main_func.exepos import exepos
 
     # Open input UI
     opt, file, gui_flag = OpenUI()
 
     if gui_flag:
         print("Run")
+        exepos(opt,file)
         input("Press any button to exit")
     else:
         print("Quit")

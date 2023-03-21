@@ -3,6 +3,7 @@ from ..common.satsys import satsys
 from .adjweek import adjweek
 from ..common.gpst2time import gpst2time
 from ..common.bdt2gpst import bdt2gpst
+from ..common.bdt2time import bdt2time
 from .uraindex import uraindex
 from .sisa_index import sisa_index
 import numpy as np
@@ -76,9 +77,22 @@ def decode_eph(ver, sat, toc, data: np.ndarray):
 
         eph.tgd[0, 0] = data[0, 25]
         eph.tgd[0, 1] = data[0, 26]
-        
-    elif sys == glc().SYS_BDS: #BDS ver.3.02
+
+    elif sys == glc().SYS_BDS:  # BDS ver.3.02
         eph.toc = bdt2gpst(eph.toc)
-        
+        eph.iode = np.fix(data[0, 3])
+        eph.iodc = np.fix(data[0, 28])
+        eph.toes = data[0, 11]
+        eph.week = np.fix(data[0, 21])
+        eph.toe = bdt2gpst(bdt2time(eph.week, data[0, 11]))
+        eph.ttr = bdt2gpst(bdt2time(eph.week, data[0, 27]))
+        eph.toe = adjweek(eph.toe, toc)
+        eph.ttr = adjweek(eph.ttr, toc)
+
+        eph.svh = np.fix(data[0, 24])
+        eph.sva = uraindex(data[0, 23])
+
+        eph.tgd[0, 0] = data[0, 25]
+        eph.tgd[0, 1] = data[0, 26]
 
     return eph, stat
