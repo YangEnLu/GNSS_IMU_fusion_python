@@ -30,7 +30,6 @@ def read_infile(opt: default_opt, file: default_file):
     # read broadcast ephemeris file
     if not file.beph == "":
         nav = readrnxnav(nav, opt, file.beph)
-        print(nav.n)
     else:
         print("<read_infile>ERROR: Have no broadcast ephemeris file!!!")
 
