@@ -4,3 +4,4 @@ src/gui/__pycache__/
 src/readfile/__pycache__/
 *.exe
 build/
+progressbar_test.py

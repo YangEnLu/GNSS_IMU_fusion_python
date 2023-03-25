@@ -2,7 +2,7 @@ from ..common.global_constants import gls
 from ..common.epoch2time import epoch2time
 import numpy as np
 
-def str2time(str):
+def str2time(str:str):
     time = gls().gtime
     ep = str.split()
     for i in range(len(ep)):

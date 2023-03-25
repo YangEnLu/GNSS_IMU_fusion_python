@@ -1,4 +1,4 @@
-from ..common.global_constants import nav, default_opt, headinfo, glc, gls
+from ..common.global_constants import nav, default_opt, headinfo, glc, gls, eph, geph
 import numpy.matlib as npm
 from .set_sysmask import set_sysmask
 from ..common.satid2no import satid2no
@@ -95,6 +95,16 @@ def decode_navb(nav: nav, opt: str, headinfo: headinfo, fname: str, num_prev_lin
                 p = sp+1
                 for j in range(4):
                     if buff[p:p+19] == "                   ":
+                        data[0, i] = 0
+                        i = i+1
+                        p = p+19
+                        continue
+                    elif buff[p:p+19] == "\n":
+                        data[0, i] = 0
+                        i = i+1
+                        p = p+19
+                        continue
+                    elif buff[p:p+19] == "":
                         data[0, i] = 0
                         i = i+1
                         p = p+19

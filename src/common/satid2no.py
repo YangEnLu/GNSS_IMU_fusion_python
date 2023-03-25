@@ -8,7 +8,8 @@ def satid2no(satid: str):
     if len(satid) == 2:
         code, prn = scanf("%s%d", satid)
     elif len(satid) == 3:
-        code, prn = scanf("%s%2d", satid)
+        code = satid[0]
+        prn = int(satid[1:3])
     else:
         print("Error in satid2no function")
 

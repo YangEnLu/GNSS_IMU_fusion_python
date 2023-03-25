@@ -1,0 +1,12 @@
+% program   : GNSS_IMU_fusion_v1
+% obs start : 2019/03/28 03:17:33.0
+% obs end   : 2019/03/28 03:59:01.0
+% mode      : SPP
+% system    : GPS BDS 
+% nfreqs    : 1
+% elev mask : 15.0 deg
+% ephemeris : broadcast
+% ionos opt : broadcast model
+% trops opt : Saastamoinen model
+%
+%  GPST          latitude(deg) longitude(deg)  height(m)   Q  ns   sdn(m)   sde(m)   sdu(m)  sdne(m)  sdeu(m)  sdun(m) age(s)  ratio    vn(m/s)    ve(m/s)    vu(m/s)      sdvn     sdve     sdvu    sdvne    sdveu    sdvun
