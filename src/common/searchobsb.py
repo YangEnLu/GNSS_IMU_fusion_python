@@ -5,8 +5,6 @@ import numpy.matlib as npm
 
 def searchobsb(obss: obs, time: gtime):
 
-    obs = npm.repmat(obs_tmp(), glc().MAXOBS, 1)
-
     time0 = obss.data[:, 0]+obss.data[:, 1]
     time1 = time.time+time.sec
 
@@ -31,17 +29,20 @@ def searchobsb(obss: obs, time: gtime):
         nobs = 0
         return obs, nobs
 
+    obs = npm.repmat(obs_tmp(), nobs, 1)
     for i in range(nobs):
-        obs[i, 0].time.time = obs0[i, 0]
-        obs[i, 0].time.sec = obs0[i, 1]
-        obs[i, 0].sat = obs0[i, 2]
-        obs[i, 0].P = obs0[i, 3:6]
-        obs[i, 0].L = obs0[6:9]
-        obs[i, 0].D = obs0[9:12]
-        obs[i, 0].S = obs0[12:15]
-        obs[i, 0].LLI = obs0[15:18]
-        obs[i, 0].code = obs0[18:21]
-        
-    obs = obs[0:nobs,]
+        obs_t = obs_tmp()
+        obs_t.time.time = obs0[i, 0]
+        obs_t.time.sec = obs0[i, 1]
+        obs_t.sat = obs0[i, 2]
+        obs_t.P = np.reshape(obs0[i, 3:6], (3, 1))
+        obs_t.L = np.reshape(obs0[i, 6:9], (3, 1))
+        obs_t.D = np.reshape(obs0[i, 9:12], (3, 1))
+        obs_t.S = np.reshape(obs0[i, 12:15], (3, 1))
+        obs_t.LLI = np.reshape(obs0[i, 15:18], (3, 1))
+        obs_t.code = np.reshape(obs0[i, 18:21], (3, 1))
+        obs[i, 0] = obs_t
+
+    obs = obs[0:nobs, ]
 
     return obs, nobs

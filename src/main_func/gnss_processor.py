@@ -4,16 +4,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 import tkinter as tk
 from tkinter import ttk
+import time
 from ..common.initrtk import initrtk
 from ..common.timespan import timespan
 from ..common.searchobsr import searchobsr
 from ..common.exclude_sat import exclude_sat
 from ..common.searchobsb import searchobsb
+from .gnss_solver import gnss_solver
 
 
 def gnss_processor(rtk: rtk, opt: default_opt, obsr: obs, obsb: obs, nav: nav):
     ti = 0
-
     # initialize figure and progressbar
     hbar = tk.Tk()
     screen_width = hbar.winfo_screenwidth()
@@ -28,10 +29,10 @@ def gnss_processor(rtk: rtk, opt: default_opt, obsr: obs, obsb: obs, nav: nav):
     val.set('Processing... 0%')
     label = tk.Label(hbar, textvariable=val)
     label.pack()
-    button = tk.Button(hbar, text='cancel')
-    button.pack()
+    
 
     hfig, ax = plt.subplots(figsize=(8, 6))
+    # hfig.show()
 
     # initialize rtk class
     rtk = initrtk(rtk, opt)
@@ -40,8 +41,13 @@ def gnss_processor(rtk: rtk, opt: default_opt, obsr: obs, obsb: obs, nav: nav):
     tspan = timespan(rtk, obsr)
     if tspan <= 0:
         print("ERROR<gnss_processor> Time span is zero!!!")
+        
 
     while True:
+        button = tk.Button(hbar, text='cancel', command=hbar.destroy)
+        button.pack()
+        
+        
         if ti > tspan:
             break
 
@@ -66,7 +72,14 @@ def gnss_processor(rtk: rtk, opt: default_opt, obsr: obs, obsb: obs, nav: nav):
                 obsb_,  = exclude_sat(obsb_, rtk)
         else:
             obsb_ = np.NaN
-            
         
+        # solve an epoch
+        rtk, = gnss_solver(rtk,obsr_,obsb_,nav)
+        
+        
+        time.sleep(0.01)
+        hbar.mainloop()
+                
+    
 
-    hbar.mainloop()
+    

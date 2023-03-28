@@ -15,5 +15,7 @@ def adjday(t1: gtime, t2: gtime):
         t = timeadd(t1, -86400)
         return t
     
-    t = t1
+    t = gtime()
+    t.time = t1.time
+    t.sec = t1.sec
     return t

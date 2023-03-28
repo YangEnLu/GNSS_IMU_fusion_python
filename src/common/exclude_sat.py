@@ -6,7 +6,7 @@ from .timediff import timediff
 from .satsys import satsys
 
 
-def exclude_sat(obs0, rtk: rtk):
+def exclude_sat(obs0: np.ndarray, rtk: rtk):
     nobs0 = np.size(obs0, 0)
     nobs = 0
     obs = npm.repmat(obs_tmp(), nobs0, 1)
@@ -32,12 +32,11 @@ def exclude_sat(obs0, rtk: rtk):
 
         obs[nobs, 0] = obs0[i, 0]
         nobs = nobs + 1
-    
+
     if nobs == 0:
         obs = np.NaN
         return obs, nobs
     if nobs < nobs0:
-        obs = obs[0:nobs,]
-
+        obs = obs[0:nobs, ]
 
     return obs, nobs

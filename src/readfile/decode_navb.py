@@ -11,7 +11,6 @@ import numpy as np
 from tqdm import tqdm
 
 
-
 def decode_navb(nav: nav, opt: str, headinfo: headinfo, fname: str, num_prev_line: int):
     NMAX = 10000
     stat = 1
@@ -41,12 +40,12 @@ def decode_navb(nav: nav, opt: str, headinfo: headinfo, fname: str, num_prev_lin
         else:
             sat_sys = line[0]
             # skip_data = False
-            if sat_sys==" ":
+            if sat_sys == " ":
                 is_new_epoch = False
             else:
                 is_new_epoch = True
                 skip_data = False
-                
+
             if is_new_epoch:
                 eph = gls().eph
                 geph = gls().geph
@@ -77,10 +76,10 @@ def decode_navb(nav: nav, opt: str, headinfo: headinfo, fname: str, num_prev_lin
                     else:
                         sat = satno(glc().SYS_GPS, prn)
                     if sys == glc().SYS_NONE:
-                        stat0 = 0 
+                        stat0 = 0
                         skip_data = True
                         continue
-                    
+
                 toc = str2time(buff[sp:sp+20])
 
                 p = sp+20
@@ -129,26 +128,27 @@ def decode_navb(nav: nav, opt: str, headinfo: headinfo, fname: str, num_prev_lin
                     eph, stat0 = decode_eph(ver, sat, toc, data)
                     finish_decode = True
                     # is_new_epoch = True
-                
+
                 if finish_decode:
                     if stat0 == 1:
                         if type == 1:
                             if nav.n+1 > np.shape(nav.eph)[0]:
-                                nav.eph[nav.n:nav.n+NMAX,0] = npm.repmat(gls().eph, NMAX, 1)
+                                nav.eph = np.append(nav.eph, npm.repmat(
+                                    gls().eph, NMAX, 1), axis=0)
                             nav.eph[nav.n, 0] = eph
                             nav.n = nav.n+1
                         elif type == 2:
                             if nav.ng+1 > np.shape(nav.geph)[0]:
-                                nav.geph[nav.ng:nav.ng+NMAX,0] = npm.repmat(gls().geph, NMAX, 1)
+                                nav.geph = np.append(nav.geph, npm.repmat(
+                                    gls().geph, NMAX, 1), axis=0)
                             nav.geph[nav.ng, 0] = geph
                             nav.ng = nav.ng+1
                     finish_decode = False
                     is_new_epoch = True
-                
-                            
+
     if nav.n < np.shape(nav.eph)[0]:
-        nav.eph=nav.eph[0:nav.n,]
+        nav.eph = nav.eph[0:nav.n, ]
     if nav.ng < np.shape(nav.geph)[0]:
-        nav.geph=nav.geph[0:nav.ng,]
-        
+        nav.geph = nav.geph[0:nav.ng, ]
+
     return nav, stat

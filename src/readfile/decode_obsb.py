@@ -33,7 +33,6 @@ def decode_obsb(headinfo: headinfo, obs: obs, tobs, opt: default_opt, fname: str
     is_header = 1
     i = 0
     ndata = 0
-    # data = npm.repmat(gls().obsd, glc().MAXOBS, 1)
     for line in tqdm(fid):
         num_line = num_line+1
         if num_line <= num_prev_line:
@@ -55,7 +54,8 @@ def decode_obsb(headinfo: headinfo, obs: obs, tobs, opt: default_opt, fname: str
                         data0 = obsd()
                         data0.time = time
                         data0.sat = sats[i]
-                        data0, stat = decode_data(line, headinfo.ver, data0, mask, ind)
+                        data0, stat = decode_data(
+                            line, headinfo.ver, data0, mask, ind)
                         if stat == 1:
                             data[ndata, 0] = data0
                             ndata = ndata+1
@@ -74,16 +74,15 @@ def decode_obsb(headinfo: headinfo, obs: obs, tobs, opt: default_opt, fname: str
                         continue
                     for id in range(ndata):
                         if obs.n+1 > np.shape(obs.data)[0]:
-                            obs.data[obs.n:obs.n+100000,
-                                     ] = npm.repmat(obsd(), 100000, 1)
+                            obs.data = np.append(
+                                obs.data, npm.repmat(obsd(), 100000, 1), axis=0)
                         data[id, 0], slips = restslips(data[id, 0], slips)
                         obs.data[obs.n, 0] = data[id, 0]
                         obs.n = obs.n+1
-
+                        
                     del data
 
- 
     if obs.n < np.shape(obs.data)[0]:
-        obs.data=obs.data[0:obs.n,]
+        obs.data = obs.data[0:obs.n, ]
 
     return obs
