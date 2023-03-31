@@ -8,23 +8,23 @@ def searcheph_h(time: gtime, sat, iode, eph: eph):
     eph_sel = [0, 0, 1, 0, 0]
     stat = 1
     sel = 0
-    eph_out = gls().eph
+    
     sys, prn = satsys(sat)
 
     if sys == glc().SYS_GPS:
         tmax = glc().MAXDTOE+1
         sel = eph_sel[0]
-    elif sys == gls().SYS_GAL:
-        tmax = gls().MAXDTOE_GAL
+    elif sys == glc().SYS_GAL:
+        tmax = glc().MAXDTOE_GAL
         sel = eph_sel[2]
-    elif sys == gls().SYS_BDS:
-        tmax = gls().MAXDTOE_BDS+1
+    elif sys == glc().SYS_BDS:
+        tmax = glc().MAXDTOE_BDS+1
         sel = eph_sel[3]
-    elif sys == gls().SYS_QZS:
-        tmax = gls().MAXDTOE_QZS+1
+    elif sys == glc().SYS_QZS:
+        tmax = glc().MAXDTOE_QZS+1
         sel = eph_sel[4]
     else:
-        tmax = gls().MAXDTOE+1
+        tmax = glc().MAXDTOE+1
     tmin = tmax + 1
 
     idx0 = eph[:, 0] == sat
@@ -33,7 +33,7 @@ def searcheph_h(time: gtime, sat, iode, eph: eph):
         stat = 0
         return eph_out, stat
     eph0 = eph[idx0, :]
-    if sys == gls().SYS_GAL and sel != 0:
+    if sys == glc().SYS_GAL and sel != 0:
         if sel == 1:
             idx_GAL = np.bitwise_and[eph0[:, 6], np.left_shift[1, 9]] != 0
             if not np.any[idx_GAL]:
@@ -48,18 +48,19 @@ def searcheph_h(time: gtime, sat, iode, eph: eph):
                 stat = 0
                 return eph_out, stat
             eph0 = eph0[idx_GAL, :]
-    t0 = np.abs[eph0[:, 10]+eph0[:, 11]-time.time-time.sec]
-    idx1 = [t0 <= tmax] & [t0 <= tmin]
-    if not np.any[idx1]:
+    t0 = np.abs(eph0[:, 10]+eph0[:, 11]-time.time-time.sec)
+    idx1 = (t0 <= tmax) & (t0 <= tmin)
+    if not np.any(idx1):
         eph_out = np.NAN
         stat = 0
         return eph_out, stat
     t1 = t0[idx1]
     eph1 = eph0[idx1, :]
-    idx2 = t1 == np.min[t1]
+    idx2 = t1 == np.min(t1)
     eph_ = eph1[idx2, :]
-    eph2 = eph_[-1, :]
+    eph2 = np.reshape(eph_[-1, :],(1,-1))
 
+    eph_out = gls().eph
     eph_out.sat = eph2[0, 0]
     eph_out.iode = eph2[0, 1]
     eph_out.iodc = eph2[0, 2]
@@ -68,11 +69,13 @@ def searcheph_h(time: gtime, sat, iode, eph: eph):
     eph_out.week = eph2[0, 5]
     eph_out.code = eph2[0, 6]
     eph_out.flag = eph2[0, 7]
+    eph_out.toc = gtime()
     eph_out.toc.time = eph2[0, 8]
     eph_out.toc.sec = eph2[0, 9]
-
+    eph_out.toe = gtime()
     eph_out.toe.time = eph2[0, 10]
     eph_out.toe.sec = eph2[0, 11]
+    eph_out.ttr = gtime()
     eph_out.ttr.time = eph2[0, 12]
     eph_out.ttr.sec = eph2[0, 13]
     eph_out.A = eph2[0, 14]

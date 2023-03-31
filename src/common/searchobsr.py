@@ -20,7 +20,7 @@ def searchobsr(obss):
     if any(idx):
         obs0 = obss.data[idx, :]
         nobs = np.size(obs0, 0)
-        obss.idx = pos[-1]
+        obss.idx = pos[-1]+1
     else:
         nobs = 0
         obs = np.NaN

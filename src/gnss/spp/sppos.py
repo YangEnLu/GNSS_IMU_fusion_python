@@ -1,5 +1,6 @@
 from ...common.global_constants import glc, rtk, nav, default_opt
 from ...ephmeris.satposs import satposs
+from .estpos import estpos
 import numpy as np
 
 
@@ -11,23 +12,27 @@ def sppos(rtk: rtk, obs: np.ndarray, navs: nav):
     # %        stat0 - state (0:error 1:ok)
     opt = rtk.opt
     nobs = np.shape(obs)[0]
+    stat0 = 1
 
     # not enough observation
     if nobs < 4:
         stat0 = 0
         return rtk, stat0
-    
+
     rtk.sol.stat = glc().SOLQ_NONE
-    rtk.sol.time = obs[0,0].time
-    
+    rtk.sol.time = obs[0, 0].time
+
     # default options for spp
     if rtk.opt.mode != glc().PMODE_SPP:
         opt.sateph = glc().EPHOPT_BRDC
         opt.tropopt = glc().IONOOPT_BRDC
         opt.ionoopt = glc().TROPOPT_SAAS
-    
+
     # compute satellite position, clock bias, velocity, clock drift
-    sv = satposs(obs,navs,opt.sateph)
+    sv = satposs(obs, navs, opt.sateph)
+
+    # compute reciever position,clock bias
+    rtk, sat_, Q, stat0 = estpos(rtk, obs, navs, sv, opt)
     
     
     

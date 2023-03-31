@@ -445,6 +445,12 @@ class geph:
         self.gamn = 0
         self.dtaun = 0
 
+class sat_t:
+    def __init__(self):
+        self.vsat = np.ndarray
+        self.azel = np.ndarray
+        self.resp = np.ndarray
+        
 
 class peph:
     def __init__(self):

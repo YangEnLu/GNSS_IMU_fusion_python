@@ -3,6 +3,7 @@ import numpy as np
 import numpy.matlib as npm
 from ..common.timeadd import timeadd
 from .ephclk import ephclk
+from .satpos import satpos
 
 
 def satposs(obs, nav, ephopt):
@@ -38,5 +39,22 @@ def satposs(obs, nav, ephopt):
         time = timeadd(time0, -pr/glc().CLIGHT)  # raw single transition time
 
         dts, stat1 = ephclk(time, obs[i, 0], nav)
+        if stat1 == 0:
+            continue
+
+        time = timeadd(time, -dts)  # signal transition time
+
+        sv_[i, 0], stat2 = satpos(time, obs[i, 0], nav, ephopt, sv_[i, 0])
+
+        if stat2 == 0:
+            continue
+
+        if sv_[i, 0].dts == 0:
+            dts, stat1 = ephclk(time, obs[i, 0], nav)
+            if stat1 == 0:
+                continue
+            # sv_[i, 0].dtsd = dts
+            sv_[i, 0].dtsd = 0
+            sv_[i, 0].vars = STD_BRDCCLK ** 2
 
     return sv_

@@ -2,6 +2,7 @@ from ..common.global_constants import glc, rtk, nav
 from ..gnss.spp.scan_obs_spp import scan_obs_spp
 from ..gnss.spp.bds2mp_corr import bds2mp_corr
 from ..gnss.spp.sppos import sppos
+from ..common.timediff import timediff
 
 
 def gnss_solver(rtk: rtk, obsr, obsb, nav: nav):
@@ -22,5 +23,14 @@ def gnss_solver(rtk: rtk, obsr, obsb, nav: nav):
 
     # standard point positioning
     rtk, stat0 = sppos(rtk, obsr, nav)
+    if stat0 == 0:
+        return rtk, stat0
+    
+    if time.time != 0:
+        rtk.tt = timediff(rtk.sol.time,time)
+    if opt.mode == glc().PMODE_SPP:
+        return rtk, stat0
+    
+    # TODO PPP not done
 
     return rtk, stat0

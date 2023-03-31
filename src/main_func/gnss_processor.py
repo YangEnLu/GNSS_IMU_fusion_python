@@ -13,7 +13,7 @@ from ..common.searchobsb import searchobsb
 from .gnss_solver import gnss_solver
 
 
-def gnss_processor(rtk: rtk, opt: default_opt, obsr: obs, obsb: obs, nav: nav):
+def gnss_processor(rtk: rtk, opt: default_opt, obsr, obsb: obs, nav: nav):
     ti = 0
     # initialize figure and progressbar
     hbar = tk.Tk()
@@ -29,7 +29,6 @@ def gnss_processor(rtk: rtk, opt: default_opt, obsr: obs, obsb: obs, nav: nav):
     val.set('Processing... 0%')
     label = tk.Label(hbar, textvariable=val)
     label.pack()
-    
 
     hfig, ax = plt.subplots(figsize=(8, 6))
     # hfig.show()
@@ -41,13 +40,11 @@ def gnss_processor(rtk: rtk, opt: default_opt, obsr: obs, obsb: obs, nav: nav):
     tspan = timespan(rtk, obsr)
     if tspan <= 0:
         print("ERROR<gnss_processor> Time span is zero!!!")
-        
 
     while True:
         button = tk.Button(hbar, text='cancel', command=hbar.destroy)
         button.pack()
-        
-        
+
         if ti > tspan:
             break
 
@@ -72,14 +69,16 @@ def gnss_processor(rtk: rtk, opt: default_opt, obsr: obs, obsb: obs, nav: nav):
                 obsb_,  = exclude_sat(obsb_, rtk)
         else:
             obsb_ = np.NaN
-        
-        # solve an epoch
-        rtk, = gnss_solver(rtk,obsr_,obsb_,nav)
-        
-        
-        time.sleep(0.01)
-        hbar.mainloop()
-                
-    
 
+        # solve an epoch
+        rtk, stat = gnss_solver(rtk, obsr_, obsb_, nav)
+
+
+        # update progress bar
+        ti = ti + 1
+        bar['value'] = int((ti/tspan)*100)
+        val.set(f'Processing... {100*ti/tspan:.1f}%')
+        hbar.update()
+        time.sleep(0.01)
     
+    return
